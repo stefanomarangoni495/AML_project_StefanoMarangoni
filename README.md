@@ -1,4 +1,4 @@
-# Advanced Machine Learning project
+# Applied Machine Learning project
 
 The aim of the following work is to create a deep neural network, precisely
 a deep convolutional network, and compare its performance depending on the
