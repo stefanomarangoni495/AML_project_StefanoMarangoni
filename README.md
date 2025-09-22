@@ -79,7 +79,4 @@ The predictions of the test examples are reported in a separate text file.
 
 # Figure
 
-```{r, echo=FALSE}
-# Placeholder for figure (CNN architecture)
-# Include the figure if available
-# Example: knitr::include_graphics("cnn_structure.png")
+knitr::include_graphics("cnn_structure.png")
