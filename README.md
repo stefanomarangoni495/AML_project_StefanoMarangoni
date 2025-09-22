@@ -79,4 +79,4 @@ The predictions of the test examples are reported in a separate text file.
 
 # Figure
 
-knitr::include_graphics("cnn_structure.png")
+knitr::include_graphics("./cnn_structure.png")
