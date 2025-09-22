@@ -79,6 +79,5 @@ The predictions of the test examples are reported in a separate text file.
 
 # Figure
 
-![plot](./cnn_structurr.png)
+![Alt text](./cnn_structurr.png)
 
-knitr::include_graphics("./cnn_structure.png")
