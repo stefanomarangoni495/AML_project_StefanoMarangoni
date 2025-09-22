@@ -1,10 +1,4 @@
----
-title: "Advanced Machine Learning project"
-author: "Stefano Marangoni"
-date: "September 2025"
----
-
-# Introduction
+# Advanced Machine Learning project
 
 The aim of the following work is to create a deep neural network, precisely
 a deep convolutional network, and compare its performance depending on the
