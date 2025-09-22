@@ -1,8 +1,7 @@
 ---
-title: "Assignment 3 ML"
+title: "Advanced Machine Learning project"
 author: "Stefano Marangoni"
-date: "January 2020"
-output: html_document
+date: "September 2025"
 ---
 
 # Introduction
