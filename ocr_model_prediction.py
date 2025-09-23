@@ -7,9 +7,17 @@ except Exception:
   pass
 
 import tensorflow as tf
+import tensorflow as tf
+from tensorflow.keras import Model
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, Softmax, ReLU
 from pathlib import Path
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.utils import to_categorical
+import pandas as pd
+import numpy as np
+%matplotlib inline
+import matplotlib.pyplot as plt
+
 
 tf.random.set_seed(0)
 
@@ -51,37 +59,33 @@ test_x, test_y, _ = load_data(
 
 num_classes = train_y.shape[1]
 
-%matplotlib inline
-import matplotlib.pyplot as plt
 
 plt.gray()
-plt.matshow(255 - train_data[0]) # 255 - x simply inverts the fading direction of the image
+plt.matshow(255 - train_x[0]) # 255 - x simply inverts the fading direction of the image
 plt.show()
 # train_data[0]
 
+train_class = pd.read_csv(data_path.joinpath("train-target.csv").as_posix(), header=None)
 alfa=list(train_class[0].value_counts().index)
 alfa.sort()
 alfa_dict_num_to_char={i:char for i,char in enumerate(alfa)}
 alfa_dict_char_to_num={char:i for i,char in enumerate(alfa)}
 
 train_class_conv=np.zeros((train_class.shape[0],26),dtype=int)
-test_class_conv=np.zeros((test_class.shape[0],26),dtype=int)
+#test_class_conv=np.zeros((test_class.shape[0],26),dtype=int)
 
 for i,char in enumerate(train_class[0]):
     train_class_conv[i][alfa_dict_char_to_num[char]]=1
     
-for i,char in enumerate(test_class[0]):
-    test_class_conv[i][alfa_dict_char_to_num[char]]=1
+#for i,char in enumerate(test_class[0]):
+#    test_class_conv[i][alfa_dict_char_to_num[char]]=1
     
 train_y=tf.convert_to_tensor(train_class_conv)
-test_y=tf.convert_to_tensor(test_class_conv)
+#test_y=tf.convert_to_tensor(test_class_conv)
 
 ms_train_x,ms_val_x=tf.split(train_x,[int(len(train_x)*0.7),len(train_x)-int(len(train_x)*0.7)])
 ms_train_y,ms_val_y=tf.split(train_y,[int(len(train_y)*0.7),len(train_y)-int(len(train_y)*0.7)])
 
-import tensorflow as tf
-from tensorflow.keras import Model
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, Softmax, ReLU
 
 class HWCharDeepModelKeras(Model):
     def __init__(self, k):
