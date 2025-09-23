@@ -79,5 +79,5 @@ The predictions of the test examples are reported in a separate text file.
 
 # Figure
 
-![image info](./cnn_structurr.png)
+![image info](cnn_structurr.png)
 
