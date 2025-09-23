@@ -78,7 +78,9 @@ Results:
 The predictions of the test examples are reported in a separate text file.  
 The learning curves plot is saved in the cnn-training.png
 
-# Figure
+# Figures
 
-![image info](cnn_structure.png)
+![Figure 1: Graphical Description of the CNN](cnn_structure.png)
+
+![Figure 2: Learning Curve plot](cnn-training.png)
 
