@@ -53,7 +53,7 @@ Two hyperparameters were tested:
 
 The combination of hyperparameters that yielded the best accuracy and lowest loss was selected:  
 
-- Epochs = 6  
+- Epochs = 35  
 - Learning rate = 0.001  
 
 This configuration achieved:  
@@ -79,5 +79,5 @@ The predictions of the test examples are reported in a separate text file.
 
 # Figure
 
-![Alt text](./cnn_structurr.png)
+![image info](./cnn_structurr.png)
 
