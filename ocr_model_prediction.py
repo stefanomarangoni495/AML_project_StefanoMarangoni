@@ -26,7 +26,7 @@ def load_data(data_path, target_path, encoder=None, fit_encoder=False):
     X = pd.read_csv(data_path, header=None).values.astype("float32")
     y = pd.read_csv(target_path, header=None).values.squeeze()
 
-    # normalize the dati
+    # normalize the data
     X = X / 255.0
 
     # reshape to image 16x8x1
@@ -43,7 +43,7 @@ def load_data(data_path, target_path, encoder=None, fit_encoder=False):
 
     return X, y, encoder
 
-data_path = Path("/content")
+data_path = Path("ocr")
 # train
 train_x, train_y, encoder = load_data(
     data_path.joinpath("train-data.csv").as_posix(),
@@ -286,6 +286,7 @@ for char in list_of_predicted_class:
     file.write(char+'\n')
 
 file.close()
+
 
 
 
