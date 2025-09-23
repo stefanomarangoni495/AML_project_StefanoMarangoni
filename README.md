@@ -76,7 +76,7 @@ Results:
 - Loss = 0.266879  
 
 The predictions of the test examples are reported in a separate text file.  
-The learning curves plot is saved in the cnn-training.png
+The learning curves plot is saved in the cnn-training.png and shown in _Figure 2_.
 
 # Figures
 
