@@ -80,5 +80,5 @@ The learning curves plot is saved in the cnn-training.png
 
 # Figure
 
-![image info](cnn_structurr.png)
+![image info](cnn_structure.png)
 
