@@ -58,8 +58,8 @@ The combination of hyperparameters that yielded the best accuracy and lowest los
 
 This configuration achieved:  
 
-- Average accuracy = 91.8910%  
-- Loss = 0.25311  
+- Average accuracy = 92.11%  
+- Loss = 0.2601  
 
 Batch sizes:  
 - Training set = 128  
@@ -72,8 +72,8 @@ After model selection, the model was trained on the entire training set and eval
 
 Results:  
 
-- Accuracy = 91.07%  
-- Loss = 0.29625  
+- Accuracy = 91.82%  
+- Loss = 0.266879  
 
 The predictions of the test examples are reported in a separate text file.  
 
