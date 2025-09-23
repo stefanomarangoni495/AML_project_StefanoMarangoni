@@ -1,34 +1,35 @@
 try:
   # %tensorflow_version only exists in Colab.
     %tensorflow_version 2.x
-   
+
     print(a)
 except Exception:
   pass
 
 import tensorflow as tf
+
+tf.random.set_seed(0)
+
+
+import pandas as pd
+import numpy as np
+from pathlib import Path
+%matplotlib inline
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+from tensorflow.keras.utils import to_categorical
 import tensorflow as tf
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, Softmax, ReLU
-from pathlib import Path
-from sklearn.preprocessing import LabelEncoder
-from tensorflow.keras.utils import to_categorical
-import pandas as pd
-import numpy as np
-%matplotlib inline
-import matplotlib.pyplot as plt
-
-
-tf.random.set_seed(0)
 
 def load_data(data_path, target_path, encoder=None, fit_encoder=False):
     X = pd.read_csv(data_path, header=None).values.astype("float32")
     y = pd.read_csv(target_path, header=None).values.squeeze()
 
-    # normalizza i dati
+    # normalize the dati
     X = X / 255.0
-    
-    # reshape a immagine 16x8x1
+
+    # reshape to image 16x8x1
     X = X.reshape((-1, 16, 8, 1))
 
     # encode labels
@@ -37,22 +38,22 @@ def load_data(data_path, target_path, encoder=None, fit_encoder=False):
         y = encoder.fit_transform(y)
     else:
         y = encoder.transform(y)
-    
+
     y = to_categorical(y)  # one-hot
-    
+
     return X, y, encoder
 
-data_path = Path("ocr")
+data_path = Path("/content")
 # train
 train_x, train_y, encoder = load_data(
-    data_path.joinpath("train-data.csv").as_posix(), 
+    data_path.joinpath("train-data.csv").as_posix(),
     data_path.joinpath("train-target.csv").as_posix(),
     fit_encoder=True
 )
 
 # test
 test_x, test_y, _ = load_data(
-    data_path.joinpath("test-data.csv").as_posix(), 
+    data_path.joinpath("test-data.csv").as_posix(),
     data_path.joinpath("test-target.csv").as_posix(),
     encoder=encoder
 )
@@ -60,10 +61,12 @@ test_x, test_y, _ = load_data(
 num_classes = train_y.shape[1]
 
 
+
 plt.gray()
 plt.matshow(255 - train_x[0]) # 255 - x simply inverts the fading direction of the image
 plt.show()
-# train_data[0]
+#train_data[0]
+
 
 train_class = pd.read_csv(data_path.joinpath("train-target.csv").as_posix(), header=None)
 alfa=list(train_class[0].value_counts().index)
@@ -72,16 +75,17 @@ alfa_dict_num_to_char={i:char for i,char in enumerate(alfa)}
 alfa_dict_char_to_num={char:i for i,char in enumerate(alfa)}
 
 train_class_conv=np.zeros((train_class.shape[0],26),dtype=int)
-#test_class_conv=np.zeros((test_class.shape[0],26),dtype=int)
+#test_class_conv=np.zeros((test_y.shape[0],26),dtype=int)
 
 for i,char in enumerate(train_class[0]):
     train_class_conv[i][alfa_dict_char_to_num[char]]=1
-    
+
 #for i,char in enumerate(test_class[0]):
 #    test_class_conv[i][alfa_dict_char_to_num[char]]=1
-    
-train_y=tf.convert_to_tensor(train_class_conv)
+
+#train_y=tf.convert_to_tensor(train_class_conv)
 #test_y=tf.convert_to_tensor(test_class_conv)
+
 
 ms_train_x,ms_val_x=tf.split(train_x,[int(len(train_x)*0.7),len(train_x)-int(len(train_x)*0.7)])
 ms_train_y,ms_val_y=tf.split(train_y,[int(len(train_y)*0.7),len(train_y)-int(len(train_y)*0.7)])
@@ -130,26 +134,29 @@ class HWCharDeepModelKeras(Model):
 
 
 
-def model_sel(epochs,  
-              max_node_number, 
-              batch_size_max, 
-              lrs, 
-              ms_train_x, ms_train_y, 
-              ms_val_x, ms_val_y, 
-              select_n_node=False, 
+
+def model_sel(epochs,
+              max_node_number,
+              batch_size_max,
+              lrs,
+              ms_train_x, ms_train_y,
+              ms_val_x, ms_val_y,
+              select_n_node=False,
               select_bs=False):
     """
-    Performs model selection by testing different combinations of nodes, batch size, and learning rate.
-        epochs: number of epochs
-        max_node_number: maximum number of filters in the convolutional layers
-        batch_size_max: maximum exponent of 2 for the batch size (2, 4, 8, …)
+    Esegue model selection testando diverse combinazioni di nodi, batch size e learning rate.
+
+    epochs: numero di epoche
+    max_node_number: massimo numero di filtri nei layer convoluzionali
+    batch_size_max: massimo esponente di 2 per il batch size (2,4,8,...)
+    lrs: minimo esponente negativo di 10 per il learning rate (10^-2,...)
     """
 
     max_acc = 0
     min_loss = np.inf
     best_params = None
 
-    # List of iperparameters
+    # Liste di iperparametri
     node_list = range(5, max_node_number+1, 5) if select_n_node else [max_node_number]
     batch_list = range(6, batch_size_max+1) if select_bs else [batch_size_max]
     lr_list = [10**(-i) for i in range(2, lrs+1)]
@@ -172,7 +179,7 @@ def model_sel(epochs,
             for lr in lr_list:
                 print(f"      Learning rate = {lr}")
 
-                # Initialize a new model
+                # Inizializza nuovo modello
                 model = HWCharDeepModelKeras(node_number)
                 model.compile(
                     optimizer=tf.keras.optimizers.Adam(learning_rate=lr),
@@ -180,7 +187,7 @@ def model_sel(epochs,
                     metrics=["accuracy"]
                 )
 
-                # Training
+                # Allenamento
                 history = model.fit(
                     train_ds,
                     validation_data=val_ds,
@@ -190,7 +197,7 @@ def model_sel(epochs,
 
                 val_loss, val_acc = model.evaluate(val_ds, verbose=0)
 
-                # Save the best model so far
+                # Salva best model
                 if val_acc*100 > max_acc and val_loss < min_loss:
                     max_acc = val_acc*100
                     min_loss = val_loss
@@ -208,7 +215,9 @@ def model_sel(epochs,
 
     return best_params
 
+
 selected_hyp_params=model_sel(35,  5, 6, 5, ms_train_x, ms_train_y, ms_val_x, ms_val_y)
+
 
 
 train_sp_x,val_sp_x=tf.split(train_x,[int(len(train_x)*0.7),len(train_x)-int(len(train_x)*0.7)])
@@ -218,6 +227,7 @@ train_ds = tf.data.Dataset.from_tensor_slices((train_sp_x, train_sp_y)).shuffle(
 val_ds = tf.data.Dataset.from_tensor_slices((val_sp_x, val_sp_y)).shuffle(10000).batch(selected_hyp_params['batch_train'])
 
 test_ds = tf.data.Dataset.from_tensor_slices((test_x, test_y)).batch(selected_hyp_params['batch_train']//2)
+
 
 print(selected_hyp_params)
 EPOCHS = selected_hyp_params['epochs']
@@ -238,22 +248,8 @@ history = network.fit(
 test_loss, test_acc = network.evaluate(test_ds)
 print(f"Test Loss: {test_loss}, Test Accuracy: {test_acc*100:.2f}%")
 
-predicted_class=network(test_x,training=False)
 
-list_of_predicted_class=[]
-for i in predicted_class:
-    ind=int(tf.argmax(i))
-    list_of_predicted_class.append(alfa_dict_num_to_char[ind])
-# list_of_predicted_class
 
-file = open('predicted_class.txt', 'w')
-
-for char in list_of_predicted_class:
-    file.write(char+'\n')
-
-file.close()
-
-# %%
 history.history
 
 fig, ax = plt.subplots(nrows=2, sharex=True)
@@ -273,5 +269,25 @@ ax[1].legend()
 
 fig.suptitle("CNN Training History")
 fig.savefig("cnn-training.png", dpi=300)
+
+
+
+predicted_class=network(test_x,training=False)
+
+list_of_predicted_class=[]
+for i in predicted_class:
+    ind=int(tf.argmax(i))
+    list_of_predicted_class.append(alfa_dict_num_to_char[ind])
+# list_of_predicted_class
+
+file = open('predicted_class.txt', 'w')
+
+for char in list_of_predicted_class:
+    file.write(char+'\n')
+
+file.close()
+
+
+
 
 
